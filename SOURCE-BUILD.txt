@@ -1,4 +1,4 @@
-IceReader corresponding-source build instructions
+JSR corresponding-source build instructions
 ================================================
 
 The source archive shipped with a release contains the exact working-tree
@@ -10,7 +10,7 @@ not yet pushed to GitHub; rebuild from the included files, not a moving branch.
 Desktop (Windows x64)
 ---------------------
 Requirements: Python 3.12 x64, Node.js/npm, PowerShell, Windows/.NET tools.
-Unzip the source archive, then open PowerShell in its IceReader directory:
+Unzip the source archive, then open PowerShell in its JSR directory:
 
   py -3.12 -m venv .venv64
   .\.venv64\Scripts\python.exe -m pip install -r backend/requirements-release.txt
@@ -55,7 +55,7 @@ This release uses official Electron 42.4.0 Windows x64, with Chromium
 148.0.7778.254 and the Chromium FFmpeg fork at
 b5e18fb9da84e26ceef30d4e4886696bf59337c0. The supplied native manifest pins
 archive bytes, source revisions and hashes of the official runtime libraries.
-The application EXE has only its Windows branding/icon resources changed.
+The application EXE has only its Windows branding/icon resources changed; a transparent technical icon prevents the default runtime artwork.
 The FFmpeg DLL itself is byte-identical to the official release. CONFIG_GPL
 and CONFIG_NONFREE are disabled in its Chrome/win/x64 config; it is used under
 LGPL-2.1-or-later. Read COPYING.LGPLv2.1 and CREDITS.chromium in the archive.
@@ -75,7 +75,7 @@ To modify/relink native components, follow the pinned Electron source's
 /docs/development/build-instructions-gn.md and Windows prerequisites. A full
 native build needs a supported Visual Studio C++ toolchain, Windows SDK,
 depot_tools, the compiler/sysroots specified by DEPS, Node/Python and ample
-disk space. These are not installed in the IceReader workspace. Initialize
+disk space. These are not installed in the JSR workspace. Initialize
 Electron at v42.4.0 with gclient according to those instructions; use its
 DEPS to obtain the exact additional upstream dependencies and apply its
 patches with the supplied patch scripts. The original archives may replace
@@ -96,7 +96,7 @@ follow the PGO documentation in the supplied Electron source. A non-PGO
 local debug/relink build may use the upstream testing.gn args instead; it
 is not claimed to reproduce the official binary bit for bit.
 
-For the shared FFmpeg library, quit IceReader, save the installed DLL as a
+For the shared FFmpeg library, quit JSR, save the installed DLL as a
 backup, then replace ffmpeg.dll beside the application EXE with the compatible
 rebuilt Windows x64 library. Restart the app to test your library; restore the
 backup if its ABI does not match. No signature or project license gate prevents
@@ -107,29 +107,25 @@ in electron-builder.yml, include the new matching sources and update the
 native manifest/hashes after review. The normal release gate intentionally
 rejects unaudited runtime upgrades; it does not forbid users' modifications.
 It is permitted to reverse engineer for debugging modifications to the LGPL
-libraries; there is no IceReader EULA restricting that right.
+libraries; there is no JSR EULA restricting that right.
 
 Verification here binds supplied upstream sources/config/patches to the
 exact official runtime hashes and checks the packaged libraries again.
 The project did not compile Chromium from scratch or claim a bit-identical
 native rebuild. See the pinned build instructions for toolchain requirements.
-Ordinary IceReader releases rebuild the application around the official
+Ordinary JSR releases rebuild the application around the official
 runtime. All current desktop corresponding sources are supplied directly,
 without depending on a future written source offer or a moving branch.
 
 License scope and historical versions
 --------------------------------------
-IceReader code: AGPL-3.0-or-later, see LICENSE and COPYRIGHT. Third-party
-components retain their licenses; logo/audio/user content rights are separate.
-The logo is a chibi Cirno portrait drawn by H0rR1p, an unofficial Touhou
-Project fan derivative; icons derived from it have the same status.
-Original Touhou Project character rights belong to ZUN / 上海アリス幻樂団;
-the artist claims rights only in their own artistic contribution.
-IceReader is not officially affiliated with or endorsed by Team Shanghai
-Alice. The artwork and click audio remain outside the code-license grant.
-See NOTICE.md and https://touhou-project.news/guideline/ for the scope,
-fan-art attribution and non-affiliation notice. Audio was separately created
-by the author; this notice does not classify it as Touhou-derived artwork.
+JSR code: AGPL-3.0-or-later, see LICENSE and COPYRIGHT. Third-party
+components retain their licenses; user content and external voice software
+are not licensed by the code license. The repository migration preserves the
+existing source history and does not change existing copyright ownership.
+The current product does not use the earlier character logo, derived icons
+or logo click audio. Historical assets have not been relicensed by migration.
+See NOTICE.md for the current source and content scope.
 No warranty is provided. Full component inventory is in third_party_licenses.
 The inventory also records build-only and platform/test-superset dependencies;
 this is not a count of modules actually shipped or executed by the app.

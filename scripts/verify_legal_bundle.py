@@ -25,8 +25,11 @@ def verify(folder: Path, *, desktop: bool = False):
         manifest = json.loads(archive.read("SOURCE-MANIFEST.json"))
         if manifest["version"] != info["version"] or manifest["project_license"] != "AGPL-3.0-or-later":
             raise ValueError("Source/build version or license mismatch")
+        source_root = manifest.get("source_root", "IceReader")
+        if source_root not in {"JSR", "IceReader"}:
+            raise ValueError("Unexpected source archive root")
         for row in manifest["files"]:
-            content = archive.read("IceReader/" + row["path"])
+            content = archive.read(source_root + "/" + row["path"])
             if hashlib.sha256(content).hexdigest() != row["sha256"]:
                 raise ValueError(f"Source checksum mismatch: {row['path']}")
         for row in manifest["dependency_sources"]:
@@ -53,9 +56,10 @@ def verify(folder: Path, *, desktop: bool = False):
             raise ValueError("Private research or progress documents found in source archive")
         if any("/.env" in name or "/data/" in name or "/YukkuriMovieMaker/" in name or name.endswith(".ymmp") for name in names):
             raise ValueError("Private or proprietary resources found in source archive")
-        for required in ("IceReader/LICENSE", "IceReader/NOTICE.md", "IceReader/scripts/build_desktop.ps1", "IceReader/backend/requirements-release.txt",
-                         "IceReader/resources/grammar/manifest.json", "IceReader/resources/grammar/morphology.json",
-                         "IceReader/resources/grammar/constructions.json", "IceReader/resources/grammar/idioms.json"):
+        for relative in ("LICENSE", "NOTICE.md", "scripts/build_desktop.ps1", "backend/requirements-release.txt",
+                         "resources/grammar/manifest.json", "resources/grammar/morphology.json",
+                         "resources/grammar/constructions.json", "resources/grammar/idioms.json"):
+            required = source_root + "/" + relative
             if required not in names:
                 raise ValueError(f"Source archive missing build material: {required}")
     inventory = json.loads((folder / "third_party_licenses" / "inventory.json").read_text(encoding="utf-8"))

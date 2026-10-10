@@ -1,4 +1,3 @@
-import { useRef, useState } from 'react'
 import type { CurrentUser } from '../types'
 import UserAvatar from './UserAvatar'
 import LegalLinks from './LegalLinks'
@@ -16,26 +15,14 @@ export default function AppNavigation({ page, user, bookCount, canResumeReading,
   onImport: () => void
 }) {
   const accountLabel = user.cloud_connected ? '云端账号' : isOnlineDeployment ? '访客模式' : '本机模式'
-  const [logoBouncing, setLogoBouncing] = useState(false)
-  const logoAudiosRef = useRef(new Set<HTMLAudioElement>())
-  function activateBrand() {
-    const audio = new Audio('/bingdu-logo-click.wav')
-    logoAudiosRef.current.add(audio)
-    audio.addEventListener('ended', () => logoAudiosRef.current.delete(audio), { once: true })
-    void audio.play().catch(() => logoAudiosRef.current.delete(audio))
-    setLogoBouncing(false)
-    window.requestAnimationFrame(() => setLogoBouncing(true))
-    onNavigate('library')
-  }
   const item = (target: AppPage, icon: string, label: string, detail?: string) => (
     <button className={`app-nav-item ${page === target ? 'active' : ''}`} aria-label={label} title={label} onClick={() => onNavigate(target)}>
       <span aria-hidden="true">{icon}</span><strong>{label}</strong>{detail && <small>{detail}</small>}
     </button>
   )
   return <aside className="app-navigation">
-    <button className={`nav-brand ${logoBouncing ? 'is-bouncing' : ''}`} onClick={activateBrand} onAnimationEnd={() => setLogoBouncing(false)} aria-label="返回书架并播放冰读语音">
-      <img src="/bingdu-logo.png" alt="" />
-      <span><strong>冰读</strong><small>日语学习阅读器</small></span>
+    <button className="nav-brand" onClick={() => onNavigate('library')} aria-label="JSR，返回书架">
+      <span><strong>JSR</strong><small>日语学习阅读器</small></span>
     </button>
     <nav aria-label="主要页面">
       <p className="nav-section-label">阅读</p>

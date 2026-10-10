@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useRef, useState } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { checkHealth, loadApiSettings, loadVoiceSettings, saveApiSettings, saveVoiceSettings, uploadVoiceTemplate } from './api'
 import AppNavigation from './app/AppNavigation'
 import type { AppPage } from './app/AppNavigation'
@@ -47,9 +47,7 @@ function AuthenticatedApp({ currentUser, serverReady, onUserChange, onReauthenti
   const [settings, setSettings] = useState<ApiSettings>(DEFAULT_SETTINGS)
   const [voiceSettings, setVoiceSettings] = useState<VoiceSettings>(DEFAULT_VOICE_SETTINGS)
   const [notice, setNotice] = useState('')
-  const [logoBouncing, setLogoBouncing] = useState(false)
   const [resumeBook, setResumeBook] = useState<Book | null>(null)
-  const logoAudiosRef = useRef(new Set<HTMLAudioElement>())
   const library = useLibraryController(setNotice)
   const { books, activeBook, activeChapter, loadingBookId, loadingChapterId, libraryLoading, setActiveBook, setActiveChapter, refreshBooks, returnToLibrary, saveImportedBook, openBook, selectChapter, deleteBook, changeBookCover, setBookImageVisibility, saveBookCollection, dissolveBookCollection } = library
   const analysis = useAnalysisController({ userId: currentUser.user_id, activeBook, settings, setActiveBook, setActiveChapter, refreshBooks, setNotice })
@@ -70,12 +68,6 @@ function AuthenticatedApp({ currentUser, serverReady, onUserChange, onReauthenti
   }
   function updateTranslationMode(mode: typeof translationMode) { setTranslationMode(mode); localStorage.setItem(`bingdu:${currentUser.user_id}:translation-mode`, mode) }
   function updateTranslationConcurrency(value: number) { setTranslationConcurrency(value); localStorage.setItem(`bingdu:${currentUser.user_id}:translation-concurrency`, String(value)) }
-  function bounceLogoAndOpenLibrary() {
-    navigate('library')
-    const audio = new Audio('/bingdu-logo-click.wav'); logoAudiosRef.current.add(audio)
-    audio.addEventListener('ended', () => logoAudiosRef.current.delete(audio), { once: true }); void audio.play().catch(() => logoAudiosRef.current.delete(audio))
-    setLogoBouncing(false); window.requestAnimationFrame(() => setLogoBouncing(true))
-  }
   async function logout() { localStorage.removeItem(`bingdu:${currentUser.user_id}:entered`); cancelBackground(); const guest = await logoutCurrentAccount(); onUserChange(guest); onExit(guest) }
 
   const overlays = <Suspense fallback={null}>
@@ -83,7 +75,7 @@ function AuthenticatedApp({ currentUser, serverReady, onUserChange, onReauthenti
   </Suspense>
 
   if (activeBook) return <div className="app-shell">
-    <header className="topbar reader-topbar"><button className="brand" onClick={bounceLogoAndOpenLibrary}><span className={`brand-mark ${logoBouncing ? 'is-bouncing' : ''}`} onAnimationEnd={() => setLogoBouncing(false)}><img src="/bingdu-logo.png" alt="" /></span><span><strong>冰读</strong><small>baka都能用的日语学习阅读器</small></span></button><div className="top-actions"><span className={`server-dot ${serverReady ? 'ready' : 'down'}`} /><button className="reader-user-avatar" onClick={() => navigate('profile')} aria-label={`打开${currentUser.display_name}的个人主页`} title={currentUser.display_name}><UserAvatar user={currentUser} /></button><button className="button ghost" onClick={() => navigate('settings')}>设置</button><button className="button primary" onClick={() => setShowImport(true)}>导入书籍</button></div></header>
+    <header className="topbar reader-topbar"><button className="brand" onClick={() => navigate('library')} aria-label="JSR，返回书架"><span><strong>JSR</strong><small>日语学习阅读器</small></span></button><div className="top-actions"><span className={`server-dot ${serverReady ? 'ready' : 'down'}`} /><button className="reader-user-avatar" onClick={() => navigate('profile')} aria-label={`打开${currentUser.display_name}的个人主页`} title={currentUser.display_name}><UserAvatar user={currentUser} /></button><button className="button ghost" onClick={() => navigate('settings')}>设置</button><button className="button primary" onClick={() => setShowImport(true)}>导入书籍</button></div></header>
     {notice && <div className="notice" role="status">{notice}<button onClick={() => setNotice('')}>×</button></div>}
     <Workspace userId={currentUser.user_id} book={activeBook} activeChapter={activeChapter} loadingChapterId={loadingChapterId} onSelectChapter={(chapter, sentenceId) => void selectChapter(chapter, sentenceId)} onProcessChapter={processChapter} onExplainSentence={explainAndStoreSentence} backgroundJob={backgroundJob} onCancelBackground={cancelBackground} dataRevision={dataRevision} onBackgroundBook={(kind) => void runBackground(kind, 'book')} onBackgroundChapter={(kind, chapter) => void runBackground(kind, 'chapter', chapter)} onBookImageVisibility={setBookImageVisibility} onNotice={setNotice} />
     {overlays}
@@ -93,7 +85,7 @@ function AuthenticatedApp({ currentUser, serverReady, onUserChange, onReauthenti
     <AppNavigation page={page} user={currentUser} bookCount={books.length} canResumeReading={Boolean(resumeBook)} onResumeReading={resumeReading} onNavigate={navigate} onImport={() => setShowImport(true)} />
     <div className="app-page-column">
       {notice && <div className="notice" role="status">{notice}<button onClick={() => setNotice('')}>×</button></div>}
-      <Suspense fallback={<section className="page-loading" aria-live="polite"><div className="loading-dango" /><span>正在打开页面…</span></section>}>
+      <Suspense fallback={<section className="page-loading" aria-live="polite"><div className="loading-spinner" aria-hidden="true" /><span>正在打开页面…</span></section>}>
         {page === 'library' && <Library books={books} loading={libraryLoading} loadingBookId={loadingBookId} onOpen={openBook} onDelete={deleteBook} onChangeCover={changeBookCover} onImport={() => setShowImport(true)} onSaveCollection={saveBookCollection} onDissolveCollection={dissolveBookCollection} onNotice={setNotice} onRefresh={refreshBooks} />}
         {page === 'dictionary' && <LexiconManagerPage />}
         {page === 'cards' && <CardCenterPage onNotice={setNotice} onStartReview={() => setPage('review')} onSourceRead={(bookId, chapterId, start) => { const book=books.find((row) => row.id===bookId); if (book) { setPage('library'); void openBook(book,chapterId,start) } else setNotice('原书已移除，卡片中的历史例句仍保留。') }} />}

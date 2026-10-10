@@ -29,7 +29,7 @@ async def download_book_share(request: BookShareRequest, context: RequestContext
     except ValueError as exc:
         raise HTTPException(400, str(exc)) from exc
     return FileResponse(path, media_type="application/zip",
-        filename=f"冰读书籍分享包-{len(set(request.book_ids))}本-{time.strftime('%Y%m%d-%H%M%S')}.zip",
+        filename=f"JSR书籍分享包-{len(set(request.book_ids))}本-{time.strftime('%Y%m%d-%H%M%S')}.zip",
         background=BackgroundTask(path.unlink, missing_ok=True))
 
 
@@ -40,7 +40,7 @@ async def download_backup(schema_version: int = 3, context: RequestContext = Dep
     except ValueError as exc:
         raise HTTPException(400, str(exc)) from exc
     return FileResponse(
-        path, media_type="application/zip", filename=f"冰读备份-{time.strftime('%Y%m%d-%H%M%S')}.zip",
+        path, media_type="application/zip", filename=f"JSR备份-{time.strftime('%Y%m%d-%H%M%S')}.zip",
         background=BackgroundTask(path.unlink, missing_ok=True),
     )
 
@@ -51,7 +51,7 @@ async def upload_backup(
     context: RequestContext = Depends(current_request_context),
 ) -> dict:
     if not (file.filename or "").lower().endswith(".zip"):
-        raise HTTPException(400, "请选择冰读导出的 ZIP 备份")
+        raise HTTPException(400, "请选择JSR导出的 ZIP 备份")
     temporary: Path | None = None
     try:
         temporary = await asyncio.to_thread(save_upload, file.file, file.filename or "backup.zip")
@@ -70,7 +70,7 @@ async def download_book_transfer(schema_version: int = 3, context: RequestContex
     except ValueError as exc:
         raise HTTPException(400, str(exc)) from exc
     return FileResponse(
-        path, media_type="application/zip", filename=f"冰读数据迁移包-{time.strftime('%Y%m%d-%H%M%S')}.zip",
+        path, media_type="application/zip", filename=f"JSR数据迁移包-{time.strftime('%Y%m%d-%H%M%S')}.zip",
         background=BackgroundTask(path.unlink, missing_ok=True),
     )
 
@@ -87,7 +87,7 @@ async def upload_book_transfer(
     context: RequestContext = Depends(current_request_context),
 ) -> dict:
     if not (file.filename or "").lower().endswith(".zip"):
-        raise HTTPException(400, "请选择冰读导出的 ZIP 书籍迁移包")
+        raise HTTPException(400, "请选择JSR导出的 ZIP 书籍迁移包")
     temporary: Path | None = None
     try:
         temporary = await asyncio.to_thread(save_upload, file.file, file.filename or "book-transfer.zip")

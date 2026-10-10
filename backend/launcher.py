@@ -45,7 +45,7 @@ def _select_port() -> tuple[int, bool]:
             return port, False
         if _is_bingdu(port):
             return port, True
-    raise RuntimeError("5173-5202 端口均被占用，冰读无法启动")
+    raise RuntimeError("5173-5202 端口均被占用，JSR无法启动")
 
 
 def _open_when_ready(port: int) -> None:

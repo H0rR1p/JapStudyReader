@@ -38,7 +38,7 @@ def release_info() -> dict:
 @router.api_route("/source", methods=["GET", "HEAD"])
 def corresponding_source() -> FileResponse:
     return FileResponse(_file("corresponding-source.zip"), media_type="application/zip",
-                        filename="IceReader-corresponding-source.zip", headers={"Cache-Control": "no-cache"})
+                        filename="JSR-corresponding-source.zip", headers={"Cache-Control": "no-cache"})
 
 
 @router.get("/license")
@@ -53,7 +53,7 @@ def notices_text() -> FileResponse:
 
 def source_page() -> HTMLResponse:
     return HTMLResponse('''<!doctype html><html lang="zh-CN"><meta charset="utf-8">
-    <title>冰读云端服务 · 源码与许可证</title><h1>冰读云端服务</h1>
+    <title>JSR · 源码与许可证</title><h1>JSR</h1>
     <p>本程序采用 GNU AGPL-3.0-or-later，按现状提供，不提供任何担保。</p>
     <p><a href="/api/legal/source">免费下载当前运行版本的对应源码</a></p>
     <p><a href="/api/legal/license">许可证全文</a> ·

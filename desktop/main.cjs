@@ -6,8 +6,9 @@ const path = require('node:path')
 const http = require('node:http')
 const { Readable } = require('node:stream')
 
-app.setName('IceReader')
+app.setName('JSR')
 if (process.platform === 'win32') app.setAppUserModelId('io.bingdu.reader')
+// Keep the previous profile location and session IDs so branding never resets user data.
 app.setPath('userData', process.env.BINGDU_DESKTOP_USER_DATA || path.join(app.getPath('appData'), 'IceReader'))
 protocol.registerSchemesAsPrivileged([{ scheme: 'bingdu', privileges: {
   standard: true, secure: true, supportFetchAPI: true, stream: true, corsEnabled: true,
@@ -85,7 +86,7 @@ async function startBackend() {
   child.once('exit', code => {
     log.end()
     if (!stopping && window) {
-      dialog.showErrorBox('冰读内部服务已退出', `退出代码 ${code}。请重新启动冰读。日志：${dataDirectory()}`)
+      dialog.showErrorBox('JSR 内部服务已退出', `退出代码 ${code}。请重新启动 JSR。日志：${dataDirectory()}`)
       app.quit()
     }
   })
@@ -163,10 +164,10 @@ async function startOidc(provider) {
       result.resume()
       const target = result.headers.location || ''
       response.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'no-store' })
-      response.end('登录已完成，可以关闭此页并返回冰读。')
+      response.end('登录已完成，可以关闭此页并返回 JSR。')
       window?.loadURL('bingdu://app/' + (target.includes('cloud_error=') ? '#/profile?' + target.split('?')[1] : '#/profile?cloud=connected'))
       oauthServer.close()
-    } catch { response.writeHead(502); response.end('Login failed. Please retry in IceReader.'); }
+    } catch { response.writeHead(502); response.end('Login failed. Please retry in JSR.'); }
   })
   await new Promise((resolve, reject) => { oauthServer.once('error', reject); oauthServer.listen(0, '127.0.0.1', resolve) })
   const callback = `http://127.0.0.1:${oauthServer.address().port}${callbackPath}`
@@ -182,8 +183,8 @@ async function startOidc(provider) {
 
 function createWindow() {
   window = new BrowserWindow({ width: 1440, height: 940, minWidth: 900, minHeight: 640,
-    backgroundColor: '#f3faff', title: '冰读', show: process.env.BINGDU_DESKTOP_TEST !== '1',
-    icon: app.isPackaged ? path.join(process.resourcesPath, 'bingdu.ico') : path.join(root, 'assets', 'bingdu.ico'),
+    backgroundColor: '#f3faff', title: 'JSR', show: process.env.BINGDU_DESKTOP_TEST !== '1',
+    icon: app.isPackaged ? path.join(process.resourcesPath, 'jsr-empty.ico') : path.join(root, 'assets', 'jsr-empty.ico'),
     webPreferences: { preload: path.join(__dirname, 'preload.cjs'), nodeIntegration: false,
       contextIsolation: true, sandbox: true, webSecurity: true, partition: 'persist:bingdu' },
   })
@@ -198,13 +199,13 @@ function createWindow() {
   window.webContents.session.on('will-download', (_event, item) => {
     // Electron supplies the native save dialog; never writes into the installation folder.
     if (process.env.BINGDU_DESKTOP_TEST === '1') item.setSavePath(path.join(app.getPath('userData'), 'test-download.zip'))
-    else item.setSaveDialogOptions({ title: '保存冰读文件', defaultPath: path.join(app.getPath('downloads'), item.getFilename()) })
+    else item.setSaveDialogOptions({ title: '保存 JSR 文件', defaultPath: path.join(app.getPath('downloads'), item.getFilename()) })
     item.once('done', (_event, state) => {
       if (state === 'interrupted') dialog.showErrorBox('下载未完成', '请重新下载文件。')
     })
   })
   window.webContents.on('render-process-gone', () => {
-    dialog.showErrorBox('冰读界面意外退出', '请重启冰读，已保存的数据仍在数据目录中。')
+    dialog.showErrorBox('JSR 界面意外退出', '请重启 JSR，已保存的数据仍在数据目录中。')
     app.quit()
   })
   window.loadFile(path.join(__dirname, 'loading.html'))
@@ -226,12 +227,12 @@ else {
       ipcMain.handle('desktop:open-data', event => { trusted(event); return shell.openPath(dataDirectory()) })
       ipcMain.handle('desktop:oidc', (event, provider) => { trusted(event); return startOidc(provider) })
       Menu.setApplicationMenu(Menu.buildFromTemplate([
-        { label: '冰读', submenu: [{ label: '打开数据目录', click: () => shell.openPath(dataDirectory()) }, { type: 'separator' }, { role: 'quit', label: '退出' }] },
+        { label: 'JSR', submenu: [{ label: '打开数据目录', click: () => shell.openPath(dataDirectory()) }, { type: 'separator' }, { role: 'quit', label: '退出' }] },
         { label: '编辑', submenu: [{ role: 'undo' }, { role: 'redo' }, { type: 'separator' }, { role: 'cut' }, { role: 'copy' }, { role: 'paste' }, { role: 'selectAll' }] },
         { label: '视图', submenu: [{ role: 'reload', label: '重新载入' }, { role: 'resetZoom', label: '实际大小' }, { role: 'zoomIn', label: '放大' }, { role: 'zoomOut', label: '缩小' }, { role: 'togglefullscreen', label: '全屏' }] },
       ]))
       await window.loadURL('bingdu://app/')
-    } catch (error) { dialog.showErrorBox('冰读无法启动', `${error.message}\n日志目录：${dataDirectory()}`); app.quit() }
+    } catch (error) { dialog.showErrorBox('JSR 无法启动', `${error.message}\n日志目录：${dataDirectory()}`); app.quit() }
   })
   app.on('window-all-closed', () => app.quit())
   app.on('before-quit', event => {

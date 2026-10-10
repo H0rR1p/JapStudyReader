@@ -1,6 +1,6 @@
 """Offline benchmark for the full-book translation scheduler.
 
-The script uses the longest chapter currently stored by IceReader and the
+The script uses the longest chapter currently stored by JSR and the
 median latency of successful historical API requests.  It never calls an AI
 service and never writes to the library.  Results are projections whose main
 purpose is to compare scheduler configurations on the same real workload.
@@ -143,7 +143,7 @@ def main() -> None:
     new_sizes = batch_sizes(texts)
     old_ms = scheduled_ms(old_sizes, medians, 1)
 
-    print("冰读后台翻译离线基准（不调用 API）")
+    print("JSR后台翻译离线基准（不调用 API）")
     print(f"章节：{title or chapter_id}")
     print(f"句数：{len(texts)}；来源：{library_path}")
     print(f"历史延迟：{usage_path or '内置保守值'}")

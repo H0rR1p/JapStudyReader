@@ -5,7 +5,7 @@ const ResEdit = require('resedit')
 module.exports = async function embedWindowsIcon(context) {
   if (context.electronPlatformName !== 'win32') return
   const executable = path.join(context.appOutDir, `${context.packager.appInfo.productFilename}.exe`)
-  const iconPath = path.join(context.packager.projectDir, 'assets', 'bingdu.ico')
+  const iconPath = path.join(context.packager.projectDir, 'assets', 'jsr-empty.ico')
   const binary = ResEdit.NtExecutable.from(fs.readFileSync(executable), { ignoreCert: true })
   const resources = ResEdit.NtExecutableResource.from(binary)
   // Replace every inherited Electron icon, including other language variants.
@@ -30,5 +30,5 @@ module.exports = async function embedWindowsIcon(context) {
   const temporary = executable + '.icon.tmp'
   fs.writeFileSync(temporary, Buffer.from(binary.generate()))
   fs.renameSync(temporary, executable)
-  console.log('Embedded bingdu logo in Windows executable')
+  console.log('Removed application branding from Windows executable')
 }

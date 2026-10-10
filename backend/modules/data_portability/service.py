@@ -330,7 +330,7 @@ def _validate_archive(path: Path) -> tuple[dict, dict]:
         for name in names:
             _safe_arcname(name)
         if "manifest.json" not in names or "data.json" not in names:
-            raise ValueError("这不是完整的冰读备份")
+            raise ValueError("这不是完整的JSR备份")
         manifest = json.loads(archive.read("manifest.json"))
         if manifest.get("format") != "bingdu-backup" or int(manifest.get("schema_version", 0)) not in {1, BACKUP_SCHEMA_VERSION}:
             raise ValueError("备份格式或版本不受支持")
@@ -366,7 +366,7 @@ def _validate_book_transfer(path: Path) -> tuple[dict, dict]:
         for name in names:
             _safe_arcname(name)
         if "manifest.json" not in names or "data.json" not in names:
-            raise ValueError("这不是冰读书籍迁移包")
+            raise ValueError("这不是JSR书籍迁移包")
         manifest = json.loads(archive.read("manifest.json"))
         if manifest.get("format") != "bingdu-book-transfer" or int(manifest.get("schema_version", 0)) not in {1, 2, BOOK_TRANSFER_SCHEMA_VERSION}:
             raise ValueError("书籍迁移包格式或版本不受支持")

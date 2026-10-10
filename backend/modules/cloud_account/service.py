@@ -43,7 +43,7 @@ def validate_cloud_url(value: str) -> str:
 
 
 def device_name() -> str:
-    return f"{platform.system()} · {platform.node() or '冰读设备'}"[:200]
+    return f"{platform.system()} · {platform.node() or 'JSR设备'}"[:200]
 
 
 async def _plain_request(method: str, path: str, **kwargs) -> httpx.Response:
@@ -87,7 +87,7 @@ async def health() -> dict:
         raise _error(response)
     data = response.json()
     if data.get("app") != "bingdu-cloud":
-        raise RuntimeError("该地址不是冰读云端服务")
+        raise RuntimeError("该地址不是JSR云端服务")
     return data
 
 

@@ -1,5 +1,5 @@
 appId: io.bingdu.reader
-productName: 冰读
+productName: JSR
 directories:
   output: build/desktop-release
 asar: true
@@ -9,7 +9,6 @@ files:
   - desktop/main.cjs
   - desktop/preload.cjs
   - desktop/loading.html
-  - public/bingdu-logo.png
   - package.json
 extraResources:
   - from: build/legal
@@ -22,22 +21,22 @@ extraResources:
     to: NOTICE.md
   - from: build/desktop-backend/bingdu-service
     to: backend
-  - from: assets/bingdu.ico
-    to: bingdu.ico
+  - from: assets/jsr-empty.ico
+    to: jsr-empty.ico
   - from: THIRD-PARTY-NOTICES.txt
     to: THIRD-PARTY-NOTICES.txt
 win:
-  icon: assets/bingdu.ico
+  icon: assets/jsr-empty.ico
   target:
     - target: nsis
       arch: [x64]
   # The afterPack hook edits resources locally; no signing certificate is configured.
   signAndEditExecutable: false
 nsis:
-  installerIcon: assets/bingdu.ico
-  uninstallerIcon: assets/bingdu.ico
+  installerIcon: assets/jsr-empty.ico
+  uninstallerIcon: assets/jsr-empty.ico
   oneClick: false
   perMachine: false
   allowToChangeInstallationDirectory: true
   deleteAppDataOnUninstall: false
-  artifactName: IceReader-${version}-Setup.${ext}
+  artifactName: JSR-${version}-Setup.${ext}

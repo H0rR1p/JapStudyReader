@@ -167,7 +167,7 @@ export default function Library({
         {shareError && shareSelection === null && <p className="error-box" role="alert">{shareError}</p>}
         {loading ? (
           <section className="empty-state loading-state" aria-live="polite">
-            <div className="loading-dango" aria-hidden="true" />
+            <div className="loading-spinner" aria-hidden="true" />
             <h2>正在读取书架</h2>
             <p>只加载书籍与章节索引，不读取正文、词元和释义。</p>
           </section>
@@ -186,7 +186,6 @@ export default function Library({
               {recentBooks.map((book) => (
                 <button className="recent-book" key={book.id} disabled={Boolean(loadingBookId)} onClick={() => onOpen(book)}>
                   <span className="recent-book-cover" aria-hidden="true">
-                    <span className="book-cover-default"><img src="/bingdu-logo.png" alt="" /></span>
                     {showCovers && <CoverArtwork className="book-cover-image" src={book.coverUrl} />}
                   </span>
                   <span className="recent-book-meta">
@@ -210,7 +209,7 @@ export default function Library({
                       </span>
                     ))}
                   </span>
-                  <span className="collection-folder-front" aria-hidden="true"><img src="/bingdu-logo.png" alt="" /></span>
+                  <span className="collection-folder-front" aria-hidden="true" />
                 </button>
                 <div className="book-meta collection-meta">
                   <button className="book-title" onClick={() => setActiveCollectionId(collection.id)}>{collection.name}</button>
@@ -222,7 +221,6 @@ export default function Library({
             {visibleBooks.map((book) => (
               <article className="book-card" key={book.id}>
                 <button className="book-cover" disabled={Boolean(loadingBookId)} aria-label={`打开《${book.title}》`} onClick={() => onOpen(book)}>
-                  <span className="book-cover-default" aria-hidden="true"><img src="/bingdu-logo.png" alt="" /></span>
                   {showCovers && <CoverArtwork className="book-cover-image" src={book.coverUrl} />}
                 </button>
                 <div className="book-meta">

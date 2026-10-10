@@ -47,7 +47,7 @@ PRIVATE_SOURCE_NAMES = {
 def read_url(url: str) -> bytes:
     for attempt in range(3):
         try:
-            with urlopen(Request(url, headers={"User-Agent": "IceReader-license-builder/1"}), timeout=40) as response:
+            with urlopen(Request(url, headers={"User-Agent": "JSR-license-builder/1"}), timeout=40) as response:
                 return response.read()
         except HTTPError as error:
             if error.code not in {429, 500, 502, 503, 504} or attempt == 2:
@@ -485,10 +485,11 @@ def main():
                  "scope_note": "Includes installed build tools for transparency; this is not a count of bundled runtime modules."}
     write_json(licenses_dir / "inventory.json", inventory)
     project = json.loads((ROOT / "package.json").read_text(encoding="utf-8"))
-    notices = """冰读第三方组件与内容许可 / IceReader third-party notices
+    notices = """JSR 第三方组件与内容许可 / JSR third-party notices
 ========================================================
 
-IceReader application source: AGPL-3.0-or-later; see LICENSE and COPYRIGHT.
+JSR application source: AGPL-3.0-or-later; see LICENSE and COPYRIGHT.
+Project repository: https://github.com/H0rR1p/JapStudyReader
 EbookLib 0.19 is retained under AGPL-3.0-or-later. Its upstream license,
 authors and exact source distribution accompany this release.
 
@@ -515,26 +516,15 @@ Build-only tools are listed for transparency, not as shipped app modules.
 External software and content
 -----------------------------
 YMM4, its proprietary voice engines/packs and user books/dictionaries are
-not licensed by IceReader's AGPL grant and are not bundled in the installer.
-The independently developed YMM bridge source is part of IceReader; building
+not licensed by JSR's AGPL grant and are not bundled in the installer.
+The independently developed YMM bridge source is part of JSR; building
 it requires the user's separately licensed YMM4 SDK/installation.
 Its limited additional linking permission is stated in ymm4-bridge/COPYRIGHT;
 it does not relicense YMM4, its SDK/engines, or any third-party code.
-The logo is a chibi Cirno portrait drawn by H0rR1p: an unofficial fan-made
-derivative work based on Touhou Project. Derived icons share this status.
-Touhou Project and its characters are (C) ZUN / 上海アリス幻樂団. H0rR1p
-claims rights only in the author's own artistic contribution, not in the
-underlying characters. IceReader is not affiliated with, sponsored by, or
-endorsed by Team Shanghai Alice, and claims no individual official approval.
-The Touhou-derived logo and visual assets, including their appearance in
-documentation, are excluded from AGPL-3.0-or-later. No character, branding,
-commercial-use or relicensing rights are granted by the software license.
-The click audio was separately created by the project author and also remains
-outside the software license; it is not classified here as Touhou-derived.
-Separate asset reuse requires the author's permission and compliance with
-the original-rightsholder rules where applicable. See NOTICE.md and
-https://touhou-project.news/guideline/ for the fan-art notice and guidelines.
-Icons are derived from public/bingdu-logo.png. No Aozora source/assets are used.
+JSR ships without a project logo, character artwork, or logo click audio.
+Its empty Windows icon is a transparent technical resource that prevents
+the inherited Electron icon from appearing; it is not a new project logo.
+No Aozora source/assets are used.
 Architecture reference: https://github.com/meokisama/aozora (GPL-3.0).
 
 Historical versions
@@ -562,6 +552,8 @@ Use this source-packaging workflow for every release, including modified ones.
         branch, dirty = "unknown", None
     files = own_source_files()
     source_manifest = {"version": project["version"], "base_commit": commit,
+                       "source_root": "JSR", "product_name": "JSR",
+                       "repository": "https://github.com/H0rR1p/JapStudyReader",
                        "source_branch": branch, "working_tree_dirty": dirty,
                        "snapshot_kind": "working-tree",
                        "includes_working_tree_changes": True, "project_license": "AGPL-3.0-or-later",
@@ -572,20 +564,21 @@ Use this source-packaging workflow for every release, including modified ones.
     temporary = output / "corresponding-source.zip.tmp"
     with ZipFile(temporary, "w", compression=ZIP_DEFLATED) as archive:
         for path in files:
-            archive.write(path, "IceReader/" + path.relative_to(ROOT).as_posix())
+            archive.write(path, "JSR/" + path.relative_to(ROOT).as_posix())
         for path in licenses_dir.rglob("*"):
             if path.is_file():
-                archive.write(path, "IceReader/" + path.relative_to(ROOT).as_posix())
+                archive.write(path, "JSR/" + path.relative_to(ROOT).as_posix())
         for path in sorted(set(source_archives)):
             # Upstream archives are already compressed. Storing them avoids
             # a long recompression pass and preserves their original bytes.
             archive.write(path, "dependency-sources/" + path.name, compress_type=ZIP_STORED)
         archive.writestr("SOURCE-MANIFEST.json", json.dumps(source_manifest, ensure_ascii=False, indent=2))
-        archive.writestr("IceReader/backend/requirements-release.txt", "\n".join(
+        archive.writestr("JSR/backend/requirements-release.txt", "\n".join(
             f"{row['name']}=={row['version']}" for row in rows if row["ecosystem"] == "python") + "\n")
     temporary.replace(output / "corresponding-source.zip")
     source_hash = file_hash(output / "corresponding-source.zip")
     write_json(output / "release.json", {"version": project["version"], "base_commit": commit,
+                                         "product_name": "JSR", "repository": "https://github.com/H0rR1p/JapStudyReader",
                                          "source_branch": branch, "working_tree_dirty": dirty,
                                          "source_sha256": source_hash, "license": "AGPL-3.0-or-later",
                                          "source_bytes": (output / "corresponding-source.zip").stat().st_size,

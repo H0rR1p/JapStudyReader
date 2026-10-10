@@ -18,7 +18,7 @@ $bridgeSource = Join-Path $app "assets\ymm4-bridge"
 $bundledBridge = $bridgeTarget
 
 # 目录版安装可直接使用运行包内的桥接插件；开发目录则优先复制打包资源。
-# 这样服务器部署不依赖冰读 EXE 的临时解包目录。
+# 这样服务器部署不依赖JSR EXE 的临时解包目录。
 if (-not (Test-Path -LiteralPath (Join-Path $bridgeSource "BingduYmmBridge.dll") -PathType Leaf)) {
     $bridgeSource = $bundledBridge
 }
@@ -67,11 +67,11 @@ if ($StartNow) {
         Start-Sleep -Milliseconds 500
     }
     if (-not (Test-Path -LiteralPath $connection)) {
-        throw "YMM4 已启动，但冰读配音桥未在 60 秒内就绪。请登录桌面检查插件和音频设备。"
+        throw "YMM4 已启动，但JSR配音桥未在 60 秒内就绪。请登录桌面检查插件和音频设备。"
     }
 }
 
-Write-Host "配音运行时已安装。请重启冰读 Web 后端，使机器级环境变量生效。"
+Write-Host "配音运行时已安装。请重启JSR Web 后端，使机器级环境变量生效。"
 Write-Host "YMM4: $ymm"
 Write-Host "模板: $template"
 Write-Host "默认角色: $Character"

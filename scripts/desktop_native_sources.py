@@ -39,7 +39,7 @@ def prepare(fetch: bool) -> tuple[list[Path], dict]:
             path.parent.mkdir(parents=True, exist_ok=True)
             temporary = path.with_suffix(".download")
             try:
-                with urlopen(Request(item["url"], headers={"User-Agent": "IceReader-source-builder/1"}), timeout=60) as response, temporary.open("wb") as handle:
+                with urlopen(Request(item["url"], headers={"User-Agent": "JSR-source-builder/1"}), timeout=60) as response, temporary.open("wb") as handle:
                     while chunk := response.read(1024 * 1024):
                         handle.write(chunk)
                 if file_hash(temporary) != item["sha256"]:

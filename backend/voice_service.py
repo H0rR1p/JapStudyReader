@@ -440,7 +440,7 @@ def _ensure_bridge(settings: VoiceSettingsStatus, template_path: Path) -> None:
         source = PROJECT_ROOT / "assets" / "ymm4-bridge"
     target = Path(settings.ymm_path).parent / "user" / "plugin" / "BingduYmmBridge"
     if not source.is_dir():
-        raise RuntimeError("冰读安装包缺少 YMM4 配音桥")
+        raise RuntimeError("JSR安装包缺少 YMM4 配音桥")
     target.mkdir(parents=True, exist_ok=True)
     try:
         for name in ("BingduYmmBridge.dll", "BingduYmmBridge.deps.json"):
@@ -463,7 +463,7 @@ def _ensure_bridge(settings: VoiceSettingsStatus, template_path: Path) -> None:
         if _bridge_ready():
             return
         time.sleep(0.5)
-    raise RuntimeError("无法连接冰读 YMM4 配音桥，请保存并重启 YMM4 后重试")
+    raise RuntimeError("无法连接JSR YMM4 配音桥，请保存并重启 YMM4 后重试")
 
 
 def _synthesize_with_bridge(

@@ -1,4 +1,4 @@
-"""Windows entry point for the standalone IceReader cloud service."""
+"""Windows entry point for the standalone JSR cloud service."""
 
 from __future__ import annotations
 

@@ -53,7 +53,7 @@ export default function LexiconManagerPage() {
     await recordLearningEvents([{ id: crypto.randomUUID(), item: { id: item.knowledge_item_id, type: item.type, canonical_key: item.canonical_key, lemma: item.lemma, reading: item.reading, grammar_pattern: item.grammar_pattern }, event_type: mastered ? 'mark_mastered' : 'mark_unknown', occurred_at: Date.now() / 1000, context: { source: 'blindspot-panel' } }])
     setBlindspots(await loadBlindspots())
   }
-  async function exportAll() { const snapshot = await loadStudyData(); downloadJson(`冰读个人词库-${new Date().toISOString().slice(0,10)}.json`, { format:'bingdu-lexicon-v2', exportedAt:new Date().toISOString(), lexemes:snapshot.lexemes }) }
+  async function exportAll() { const snapshot = await loadStudyData(); downloadJson(`JSR个人词库-${new Date().toISOString().slice(0,10)}.json`, { format:'bingdu-lexicon-v2', exportedAt:new Date().toISOString(), lexemes:snapshot.lexemes }) }
 
   const counts = useMemo(() => new Map(page.facets.kana.map((item) => [item.kana, item.count])), [page.facets.kana])
   const start = Math.max(0, Math.floor(scrollTop / rowHeight) - 3); const visible = page.items.slice(start, start + Math.ceil(viewport / rowHeight) + 6)

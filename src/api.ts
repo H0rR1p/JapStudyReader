@@ -519,7 +519,7 @@ export async function downloadFullBackup(schemaVersion?: 1 | 3): Promise<void> {
   const blob = await response.blob()
   const disposition = response.headers.get('Content-Disposition') ?? ''
   const encoded = disposition.match(/filename\*=utf-8''([^;]+)/i)?.[1]
-  const filename = encoded ? decodeURIComponent(encoded) : `冰读备份-${new Date().toISOString().slice(0, 10)}.zip`
+  const filename = encoded ? decodeURIComponent(encoded) : `JSR备份-${new Date().toISOString().slice(0, 10)}.zip`
   const url = URL.createObjectURL(blob)
   const link = document.createElement('a')
   link.href = url; link.download = filename; link.click()
@@ -539,7 +539,7 @@ export async function downloadBookTransfer(bookIds?: string[], schemaVersion?: 1
   const blob = await response.blob()
   const disposition = response.headers.get('Content-Disposition') ?? ''
   const encoded = disposition.match(/filename\*=utf-8''([^;]+)/i)?.[1]
-  const filename = encoded ? decodeURIComponent(encoded) : `冰读书籍迁移包-${new Date().toISOString().slice(0, 10)}.zip`
+  const filename = encoded ? decodeURIComponent(encoded) : `JSR书籍迁移包-${new Date().toISOString().slice(0, 10)}.zip`
   const url = URL.createObjectURL(blob)
   const link = document.createElement('a')
   link.href = url; link.download = filename; link.click()

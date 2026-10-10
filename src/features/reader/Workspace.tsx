@@ -102,7 +102,7 @@ export default function Workspace({ userId, book, activeChapter, loadingChapterI
         </div>}
       </aside>
       <main className="reading-stage">
-        {!activeChapter && loadingChapterId ? <section className="processing-panel loading-chapter" aria-live="polite"><div className="loading-dango" aria-hidden="true" /><p className="eyebrow">按章读取</p><h1>正在加载章节</h1><p>正在读取本章句子、分词和注释。点击左上角头像可以安全返回书架。</p></section> : !activeChapter ? null : (
+        {!activeChapter && loadingChapterId ? <section className="processing-panel loading-chapter" aria-live="polite"><div className="loading-spinner" aria-hidden="true" /><p className="eyebrow">按章读取</p><h1>正在加载章节</h1><p>正在读取本章句子、分词和注释。点击左上角 JSR 可以安全返回书架。</p></section> : !activeChapter ? null : (
           <Reader
             userId={userId}
             book={book} chapter={activeChapter} previousChapter={previousChapter} nextChapter={nextChapter}

@@ -29,7 +29,7 @@ def verify_icon(executable: Path, icon: Path) -> None:
         actual = {images[struct.unpack_from('<H', group_bytes, 6 + index * 14 + 12)[0]]
                   for index in range(group_count)}
         if not actual or not actual.issubset(expected):
-            raise ValueError(f'EXE icon does not match bingdu.ico: {executable}')
+            raise ValueError(f'EXE icon does not match supplied empty icon: {executable}')
     print(f'Icon verified: {executable}')
 
 

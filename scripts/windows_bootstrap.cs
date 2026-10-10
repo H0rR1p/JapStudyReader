@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 
-internal static class BingduBootstrap
+internal static class JsrBootstrap
 {
     [DllImport("user32.dll", CharSet = CharSet.Unicode)]
     private static extern int MessageBox(IntPtr handle, string text, string caption, uint type);
@@ -17,17 +17,17 @@ internal static class BingduBootstrap
         string pointer = Path.Combine(buildRoot, "desktop-current.txt");
         if (File.Exists(pointer))
         {
-            string candidate = Path.GetFullPath(Path.Combine(buildRoot, File.ReadAllText(pointer).Trim(), "win-unpacked", "冰读.exe"));
+            string candidate = Path.GetFullPath(Path.Combine(buildRoot, File.ReadAllText(pointer).Trim(), "win-unpacked", "JSR.exe"));
             if (candidate.StartsWith(buildRoot, StringComparison.OrdinalIgnoreCase) && IsComplete(candidate)) executable = candidate;
         }
         foreach (string directory in new[] { "install-release", "desktop-release" })
         {
-            string candidate = Path.Combine(buildRoot, directory, "win-unpacked", "冰读.exe");
+            string candidate = Path.Combine(buildRoot, directory, "win-unpacked", "JSR.exe");
             if (executable == null && IsComplete(candidate)) executable = candidate;
         }
         if (executable == null)
         {
-            MessageBox(IntPtr.Zero, "没有找到目录版冰读，请先运行 scripts\\build_windows.ps1。", "冰读启动失败", 0x10);
+            MessageBox(IntPtr.Zero, "没有找到目录版 JSR，请先运行 scripts\\build_desktop.ps1。", "JSR 启动失败", 0x10);
             return;
         }
 
@@ -42,7 +42,7 @@ internal static class BingduBootstrap
         }
         catch (Exception error)
         {
-            MessageBox(IntPtr.Zero, error.Message, "冰读启动失败", 0x10);
+            MessageBox(IntPtr.Zero, error.Message, "JSR 启动失败", 0x10);
         }
     }
 

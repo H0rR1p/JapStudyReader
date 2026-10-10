@@ -69,8 +69,9 @@ async function api(page, url, options) {
   const info = await page.evaluate(() => window.bingduDesktop.info())
   assert.ok(info.dataDirectory.startsWith(profile))
   assert.equal((await api(page, '/api/library/index')).status, 200)
-  assert.equal((await page.evaluate(async () => (await fetch('/bingdu-logo.png')).status)), 200)
-  assert.equal((await page.evaluate(async () => (await fetch('/bingdu-logo-click.wav', { headers: { range: 'bytes=0-100' } })).status)), 206)
+  assert.equal(await page.title(), 'JSR · 日语学习阅读器')
+  assert.equal(await page.locator('img[src*="bingdu-logo"], .brand-logo').count(), 0)
+  assert.equal(await instance.evaluate(({ app }) => app.getName()), 'JSR')
   if (executable) assert.equal((await api(page, '/api/dictionary/sources')).value.some(item => item.package_id === 'greyindex/jitendex-yomitan-zh'), false)
   const security = await instance.evaluate(({ BrowserWindow }) => {
     const preferences = BrowserWindow.getAllWindows()[0].webContents.getLastWebPreferences()
@@ -158,7 +159,7 @@ async function api(page, url, options) {
     await new Promise(resolve => setTimeout(resolve, 100))
   }
   assert.ok(illustrationLoaded, 'original illustration must finish loading')
-  await page.getByRole('button', { name: '冰读模式', exact: true }).click()
+  await page.getByRole('button', { name: '学习模式', exact: true }).click()
   await page.getByRole('button', { name: '设置', exact: true }).click()
   await page.getByRole('button', { name: '继续阅读', exact: true }).click()
   await page.locator(`[data-sentence-id="${sentence.id}"].selected`).waitFor()

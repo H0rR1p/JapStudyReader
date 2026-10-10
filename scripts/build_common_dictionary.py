@@ -14,7 +14,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "resources/dictionaries/common-ja-zh.tsv"
-TITLE = "冰读 AI 常用日中词典（通用义项）"
+TITLE = "JSR AI 常用日中词典（通用义项）"
 
 
 def build(output: Path) -> dict:
@@ -61,12 +61,12 @@ def build(output: Path) -> dict:
                for index, ((lemma, reading), record) in enumerate(terms.items(), 1)]
     manifest = {
         "title": TITLE, "format": 3, "revision": "2026.10.05-ai.1",
-        "sequenced": True, "author": "IceReader / AI 生成",
+        "sequenced": True, "author": "JSR / AI 生成",
         "description": "原创 AI 生成的日语常用词与常见搭配中文释义。未经过完整人工审校；通用词义不能替代句中义项判断。",
         "sourceLanguage": "ja", "targetLanguage": "zh",
         "package_id": "icereader/ai-common-ja-zh",
         "license": "AGPL-3.0-or-later",
-        "homepage": "https://github.com/H0rR1p/IceReader",
+        "homepage": "https://github.com/H0rR1p/JapStudyReader",
     }
     report = {
         "base_headword_reading_pairs": base_count,
@@ -88,7 +88,7 @@ def build(output: Path) -> dict:
 重复词形/读音合并。同音异义词不自动生成混合的假名别名。
 
 ## 导入
-冰读 → 个人词库 → 导入其他词典 → 选择本 ZIP，不要解压。
+JSR → 个人词库 → 导入其他词典 → 选择本 ZIP，不要解压。
 导入后新切分章节会优先匹配本地词义。已有个人词义和句中语境释义可能优先显示。
 快速句意模式仍会调用 AI 翻译句子；本包主要减少重复补充通用词义的需要。
 固定搭配按完整词条提供，单字切词不一定自动匹配完整搭配。
@@ -97,7 +97,7 @@ def build(output: Path) -> dict:
 发现错误可用现有“修正”或“AI 修正释义”接口更正个人词义。
 
 ## 授权与来源
-本包数据随 IceReader 采用 AGPL-3.0-or-later。LICENSE.txt 为完整许可证。
+本包数据随 JSR 采用 AGPL-3.0-or-later。LICENSE.txt 为完整许可证。
 SOURCE.tsv 为原始 AI 生成数据；build_common_dictionary.py 为打包脚本。
 AI 输出可能存在误义、漏义或读音错误，统计与结构检查不代表全面语言学审校。
 格式参照 Yomitan v3：https://github.com/yomidevs/yomitan/blob/master/docs/making-yomitan-dictionaries.md
@@ -124,6 +124,6 @@ AI 输出可能存在误义、漏义或读音错误，统计与结构检查不�
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--output", type=Path, default=ROOT / "build/dictionaries/冰读-AI常用日中词典-20261005.zip")
+    parser.add_argument("--output", type=Path, default=ROOT / "build/dictionaries/JSR-AI常用日中词典-20261005.zip")
     args = parser.parse_args()
     print(json.dumps(build(args.output), ensure_ascii=False, indent=2))

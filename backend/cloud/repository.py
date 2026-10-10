@@ -304,7 +304,7 @@ class CloudRepository:
             """INSERT INTO refresh_sessions(
                 id,user_id,family_id,device_id,device_name,token_hash,created_at,last_seen_at,expires_at
             ) VALUES(?,?,?,?,?,?,?,?,?)""",
-            (session_id, user_id, family, device_id[:200], (device_name or "冰读设备")[:200],
+            (session_id, user_id, family, device_id[:200], (device_name or "JSR设备")[:200],
              self._token_hash(refresh), now, now, now + REFRESH_TTL),
         )
         connection.execute(

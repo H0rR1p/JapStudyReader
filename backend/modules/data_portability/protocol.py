@@ -36,7 +36,7 @@ def compatibility(version: int, purpose: str) -> dict:
 def validate_compatibility(manifest: dict) -> None:
     minimum = manifest.get("min_reader_schema_version", manifest.get("schema_version", 1))
     if not isinstance(minimum, int) or minimum > PROTOCOL_VERSION:
-        raise ValueError("此迁移包需要较新的冰读版本，已拒绝导入以避免数据丢失")
+        raise ValueError("此迁移包需要较新的JSR版本，已拒绝导入以避免数据丢失")
     required = manifest.get("required_capabilities", [])
     if not isinstance(required, list) or any(not isinstance(item, str) for item in required):
         raise ValueError("迁移包能力声明格式错误")

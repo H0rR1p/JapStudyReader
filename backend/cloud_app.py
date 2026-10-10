@@ -33,7 +33,7 @@ async def lifespan(_app: FastAPI):
     yield
 
 
-app = FastAPI(title="冰读云端服务", version="0.4.1", lifespan=lifespan)
+app = FastAPI(title="JSR云端服务", version="0.4.1", lifespan=lifespan)
 app.include_router(legal_router)
 app.add_api_route("/", source_page, methods=["GET"], include_in_schema=False)
 if config.allowed_origins:
@@ -98,14 +98,14 @@ class RegisterInput(BaseModel):
     password: str = Field(min_length=10, max_length=256)
     display_name: str = Field(min_length=1, max_length=40)
     device_id: str = Field(min_length=1, max_length=200)
-    device_name: str = Field(default="冰读设备", max_length=200)
+    device_name: str = Field(default="JSR设备", max_length=200)
 
 
 class LoginInput(BaseModel):
     email: str = Field(min_length=3, max_length=254)
     password: str = Field(min_length=1, max_length=256)
     device_id: str = Field(min_length=1, max_length=200)
-    device_name: str = Field(default="冰读设备", max_length=200)
+    device_name: str = Field(default="JSR设备", max_length=200)
 
 
 class RefreshInput(BaseModel):
@@ -209,7 +209,7 @@ async def register(payload: RegisterInput, request: Request) -> dict:
     token = await asyncio.to_thread(repository.create_action_token, result["user"]["id"], "verify_email", 24 * 60 * 60)
     link = f"{config.public_url}/verify-email?token={token}"
     delivery = await asyncio.to_thread(
-        mailer.send, result["user"]["email"], "验证你的冰读云端邮箱",
+        mailer.send, result["user"]["email"], "验证你的JSR云端邮箱",
         f"请在 24 小时内打开以下链接验证邮箱：\n\n{link}\n\n如果不是你创建的账号，可以忽略这封邮件。",
     )
     result["verification_delivery"] = delivery
@@ -273,7 +273,7 @@ async def request_verification(payload: EmailInput, request: Request) -> dict:
     if found:
         user, token = found
         link = f"{config.public_url}/verify-email?token={token}"
-        await asyncio.to_thread(mailer.send, user["email"], "验证你的冰读云端邮箱", f"请打开以下链接验证邮箱：\n\n{link}")
+        await asyncio.to_thread(mailer.send, user["email"], "验证你的JSR云端邮箱", f"请打开以下链接验证邮箱：\n\n{link}")
     result = {"accepted": True}
     if found and config.dev_mode:
         result["development_token"] = found[1]
@@ -289,7 +289,7 @@ async def verify_email(payload: TokenInput) -> dict:
 async def verify_email_link(token: str = Query(min_length=20, max_length=500)) -> JSONResponse:
     try:
         user = await asyncio.to_thread(repository.verify_email, token)
-        return JSONResponse({"verified": True, "email": user["email"], "message": "邮箱验证完成，可以返回冰读。"})
+        return JSONResponse({"verified": True, "email": user["email"], "message": "邮箱验证完成，可以返回JSR。"})
     except CloudAuthError as exc:
         return JSONResponse(status_code=400, content={"verified": False, "detail": str(exc)})
 
@@ -301,7 +301,7 @@ async def request_password_reset(payload: EmailInput, request: Request) -> dict:
     if found:
         user, token = found
         link = f"{config.public_url}/password-reset?token={token}"
-        await asyncio.to_thread(mailer.send, user["email"], "重设你的冰读云端密码", f"请在一小时内使用以下链接重设密码：\n\n{link}")
+        await asyncio.to_thread(mailer.send, user["email"], "重设你的JSR云端密码", f"请在一小时内使用以下链接重设密码：\n\n{link}")
     result = {"accepted": True}
     if found and config.dev_mode:
         result["development_token"] = found[1]
@@ -315,11 +315,11 @@ async def reset_password(payload: ResetInput) -> dict:
 
 @app.get("/password-reset")
 async def password_reset_info(token: str = Query(min_length=20, max_length=500)) -> JSONResponse:
-    return JSONResponse({"token": token, "message": "请在冰读登录页的“找回云端账号”中粘贴此重置码。"})
+    return JSONResponse({"token": token, "message": "请在JSR登录页的“找回云端账号”中粘贴此重置码。"})
 
 
 @app.get("/v1/auth/oidc/start/{provider_id}")
-async def oidc_start(provider_id: str, return_url: str, device_id: str, device_name: str = "冰读设备") -> RedirectResponse:
+async def oidc_start(provider_id: str, return_url: str, device_id: str, device_name: str = "JSR设备") -> RedirectResponse:
     target = await oauth.start(provider_id, return_url, device_id, device_name)
     return RedirectResponse(target, status_code=302)
 
@@ -340,7 +340,7 @@ async def oidc_callback(provider_id: str, state: str, code: str = "", error: str
     parsed = urlsplit(return_url)
     query = parse_qs(parsed.query)
     device_id = str(query.pop("device_id", [secrets.token_urlsafe(12)])[0])
-    device_name = str(query.pop("device_name", ["冰读设备"])[0])
+    device_name = str(query.pop("device_name", ["JSR设备"])[0])
     handoff = await asyncio.to_thread(repository.create_handoff, user_id, provider_id, device_id, device_name)
     clean_query = [(key, item) for key, values in query.items() for item in values]
     clean_query.extend([("code", handoff), ("provider", provider_id)])

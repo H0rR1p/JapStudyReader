@@ -713,7 +713,7 @@ export default function Reader({ userId, book, chapter, previousChapter, nextCha
         <div className="reader-toolbar">
           <div><p className="eyebrow">{book.title}</p><h1>{chapter.title}</h1></div>
           <div className="display-toggles">
-            {chapter.originalHtmlUrl && <button className={`mode-button ${viewMode === 'original' ? 'active' : ''}`} onClick={() => setViewMode(viewMode === 'study' ? 'original' : 'study')}>{viewMode === 'study' ? '原书预览' : '冰读模式'}</button>}
+            {chapter.originalHtmlUrl && <button className={`mode-button ${viewMode === 'original' ? 'active' : ''}`} onClick={() => setViewMode(viewMode === 'study' ? 'original' : 'study')}>{viewMode === 'study' ? '原书预览' : '学习模式'}</button>}
             <label className="assistance-select"><span>阅读辅助</span><select value={assistanceMode} onChange={(event) => { const value=event.target.value as typeof assistanceMode; setAssistanceMode(value); setShowFurigana(true); localStorage.setItem(`bingdu:${userId}:assistance-mode`,value) }}><option value="auto">自动渐退</option><option value="always">始终显示</option><option value="challenge">挑战模式</option></select></label>
             <Toggle label="语法" value={showAnnotations} onChange={setShowAnnotations} />
           </div>
@@ -726,7 +726,7 @@ export default function Reader({ userId, book, chapter, previousChapter, nextCha
         {(chapter.status === 'pending' || chapter.status === 'failed') && <div className="inline-warning">本章尚未切分。<button disabled={backgroundJob?.running} onClick={onRetry}>{chapter.status === 'failed' ? '重试切分' : '切分本章'}</button></div>}
         {chapter.status === 'processing' && <div className="inline-warning">正在切分本章。</div>}
         {structureError && <div className="inline-warning" role="status">完整活用暂不可用：{structureError}<button type="button" onClick={() => { setStructureError(''); detailsLoadedRef.current = 0; setStructureRetry((value) => value + 1) }}>重新加载结构</button></div>}
-        {readerLoading ? <div className="reader-loading" aria-live="polite"><div className="loading-dango" aria-hidden="true" /><span>正在整理本章内容…</span></div> : viewMode === 'original' && chapter.originalHtmlUrl
+        {readerLoading ? <div className="reader-loading" aria-live="polite"><div className="loading-spinner" aria-hidden="true" /><span>正在整理本章内容…</span></div> : viewMode === 'original' && chapter.originalHtmlUrl
           ? <iframe className="original-preview" sandbox="" src={chapter.originalHtmlUrl} title={`${chapter.title} 原书预览`} />
           : <div className="japanese-text" lang="ja">
               {chapter.blocks?.length ? chapter.blocks.map(renderBlock) : sentences.length ? visibleSentences.map(renderSentence) : chapter.text}
@@ -778,7 +778,7 @@ export default function Reader({ userId, book, chapter, previousChapter, nextCha
             </section>
             {showAnnotations && currentNotes.length > 0 && <section className="panel-section"><h3>AI 语境说明</h3>{currentNotes.map((note) => <div className="annotation" key={note.id}><span>语法结构</span><strong>{note.structure || note.quote}</strong><small className="annotation-quote" lang="ja">{note.quote}</small><p>{note.explanation_zh}</p></div>)}</section>}
           </>
-        ) : <p className="muted">选择一个句子开始冰读。</p>}
+        ) : <p className="muted">选择一个句子开始阅读。</p>}
         </div>}
       </aside>
     </div>

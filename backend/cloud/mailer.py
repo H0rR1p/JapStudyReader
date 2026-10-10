@@ -15,7 +15,7 @@ class Mailer:
     def send(self, recipient: str, subject: str, text: str) -> str:
         message = EmailMessage()
         message["Subject"] = subject
-        message["From"] = self.config.smtp_from or "冰读 <noreply@localhost>"
+        message["From"] = self.config.smtp_from or "JSR <noreply@localhost>"
         message["To"] = recipient
         message.set_content(text)
         if not self.config.smtp_host:

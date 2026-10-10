@@ -89,7 +89,7 @@ async def lifespan(_app: FastAPI):
             close_ai_store()
 
 
-app = FastAPI(title="冰读本地 API", version="0.5.0", lifespan=lifespan)
+app = FastAPI(title="JSR 本地 API", version="0.5.1", lifespan=lifespan)
 app.include_router(legal_router)
 app.include_router(identity_router)
 app.include_router(content_router)
@@ -129,7 +129,7 @@ async def handle_domain_error(_request: Request, error: DomainError) -> JSONResp
 async def request_context_middleware(request: Request, call_next):
     desktop_secret = os.environ.get("BINGDU_DESKTOP_SECRET")
     if desktop_secret and not hmac.compare_digest(request.headers.get("x-bingdu-desktop-secret", ""), desktop_secret):
-        return JSONResponse(status_code=403, content={"detail": "此服务仅供冰读客户端使用"})
+        return JSONResponse(status_code=403, content={"detail": "此服务仅供 JSR 客户端使用"})
     started_at = time.perf_counter()
     host = (request.url.hostname or "").casefold()
     if host not in ALLOWED_HOSTS:
